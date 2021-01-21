@@ -7,3 +7,4 @@ using Statistics
 include(joinpath("base","Types.jl"))
 include(joinpath("base","Checks.jl"))
 include(joinpath("datastore","Files.jl"))
+include(joinpath("analysis", "Pretreatment.jl"))
