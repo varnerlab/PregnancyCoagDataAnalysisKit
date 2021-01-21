@@ -56,8 +56,28 @@ function load_study_data_set(filePath::String;
         # grab the no-missing cols -
         df_populated_cols = df_missing[!,col_to_keep_array]
 
+        # ok, last - let's remove rows that are all missing -
+        (number_of_rows,number_of_cols) = size(df_populated_cols)
+        for row_index = 1:number_of_rows
+            
+            # grab the row -
+            data_row = df_populated_cols[row_index,:]
+
+            # check -
+            bit_array = ismissing.(data_row)
+            idx_one = findall(x->x==1,bit_array)
+
+            # if the length(idx_one) => the number of rows, then all rows are missing
+            if (length(idx_one) != number_of_cols)
+                push!(row_to_keep_array, row_index)
+            end
+        end
+
+        # grab the non-missing rows -
+        df_populated_row_and_cols = df_populated_cols[row_to_keep_array,:]
+
         # return -
-        return VLResult(df_populated_cols)
+        return VLResult(df_populated_row_and_cols)
     catch error
         return VLResult(error)
     end
