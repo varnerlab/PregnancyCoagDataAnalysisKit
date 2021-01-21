@@ -6,7 +6,7 @@
 function load_study_data_set(filePath::String; removeMissingColumn::Bool = true)::VLResult
 
     # initialize -
-    col_set_to_keep = Array{Symbol,1}()
+    col_set_to_keep = Array{String,1}()
 
     try 
         
