@@ -27,14 +27,8 @@ function load_study_data_set(filePath::String;
         end
 
         # go trhough the cols, are there #N/A
-        (number_of_rows,number_of_cols) = size(df)
-        for col_index = 1:number_of_cols
+        df_missing = DataFrame(replace(Matrix(df), missingValueSentinal=>missing))
 
-            # replace the missingValueSentinal w/missing -
-            df = replace(df[!,col_index],missingValueSentinal=>missing)
-        end
-
-        
         # return -
         return VLResult(df)
     catch error
