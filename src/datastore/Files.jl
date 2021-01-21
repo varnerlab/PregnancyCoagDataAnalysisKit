@@ -64,12 +64,12 @@ function load_study_data_set(filePath::String;
             data_row = df_populated_cols[row_index,:]
 
             # check -
-            bit_array = ismissing.(data_row)
-            idx_one = findall(x->x==1,bit_array)
-
-            # if the length(idx_one) => the number of rows, then all rows are missing
-            if (length(idx_one) != number_of_cols)
-                push!(row_to_keep_array, row_index)
+            for col_index = 1:number_of_cols
+                data_row_value = data_row[col_index]
+                if (ismissing(data_row_value) == false)
+                    push!(row_to_keep_array, row_index)
+                    break
+                end
             end
         end
 
