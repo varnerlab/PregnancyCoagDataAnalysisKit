@@ -17,7 +17,7 @@ function load_study_data_set(filePath::String; removeMissingColumn::Bool = true)
         end
     
         # ok, if we get here we can load the file -
-        df = CSV.read(filePath)
+        df = CSV.read(filePath, DataFrame)
 
         # if removeMissingColumn = true, then lets go through each col of the data set.
         # if *all* the values in the col are missing, then remove that col -
