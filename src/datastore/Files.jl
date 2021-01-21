@@ -30,7 +30,7 @@ function load_study_data_set(filePath::String;
         df_missing = DataFrame(replace(Matrix(df), "$(missingValueSentinal)"=>missing))
 
         # return -
-        return VLResult(df)
+        return VLResult(df_missing)
     catch error
         return VLResult(error)
     end
