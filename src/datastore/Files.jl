@@ -3,6 +3,48 @@
 # =========================================================================================================== #
 
 # === PUBLIC FUNCTIONS THAT ARE EXPORTED ==================================================================== #
+function extract_minimum_complete_data_set(dataFrame::DataFrame, colNameArray::Array{String,1})::VLResult
+
+    # initialize -
+    rows_to_keep_array = Array{Int64,1}()
+
+    try 
+
+        # ok: grab the cols of interest -
+        df_tmp = dataFrame[!,colNameArray]
+
+        # logic: we need to go through each row, if we econter *any* missing value, then we need stop and throwthat row out
+        (number_of_rows, number_of_cols) = size(df_tmp)
+        for row_index = 1:number_of_row
+            
+            # tmp -
+            tmp_array = Array{Any,1}()
+            for col_index = 1:number_of_cols
+                push!(tmp_array,df_tmp[row_index,col_index])
+            end
+
+            # ok, so let's walk through -
+            bit_array = ismissing.(tmp_array)
+
+            # do we have *any* 1's?
+            idx_one = findall(x->x==1,bit_array)
+            if (length(idx_one)==0)
+                push!(rows_to_keep_array,row_index)            
+            end
+        end
+
+        # ok: return filtered array -
+        df_complete = dataFrame[rows_to_keep_array,colNameArray]
+
+        # return -
+        return VLResult(df_complete)
+    catch error
+        return VLResult(error)
+    end
+
+end
+
+
 function load_study_data_set(filePath::String; 
     removeMissingColumn::Bool = true, missingValueSentinal::String = "#N/A")::VLResult
 
