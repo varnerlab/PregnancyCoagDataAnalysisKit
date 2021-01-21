@@ -1,0 +1,4 @@
+name = "PregnancyCoagDataAnalysisKit"
+uuid = "88466bc2-2b34-4d07-94a9-34b711d47f53"
+authors = ["Jeffrey Varner <jvarner@pooksoft.com>"]
+version = "0.1.0"
