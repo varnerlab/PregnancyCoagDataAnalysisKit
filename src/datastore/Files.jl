@@ -3,7 +3,8 @@
 # =========================================================================================================== #
 
 # === PUBLIC FUNCTIONS THAT ARE EXPORTED ==================================================================== #
-function load_study_data_set(filePath::String; removeMissingColumn::Bool = true)::VLResult
+function load_study_data_set(filePath::String; 
+    removeMissingColumn::Bool = true, missingValueSentinal::String = "#N/A")::VLResult
 
     # initialize -
     col_set_to_keep = Array{String,1}()
@@ -25,31 +26,15 @@ function load_study_data_set(filePath::String; removeMissingColumn::Bool = true)
             return VLResult(df)
         end
 
-        # go trhough the cols, are there *non* missing elements?
+        # go trhough the cols, are there #N/A
         for col_name in names(df)
-            
-            # grab all the rows for this col -
-            row_counter = 1
-            should_continue_to_loop = true
-            while (should_continue_to_loop == true)
-                
-                # grab col name if we have a *non* missing value -
-                test_value = df[row_counter,col_name]
-                if (ismissing(test_value) == false)
-                    push!(col_set_to_keep,col_name)
-                    should_continue_to_loop = false
-                end
-                
-                # otherwise go around again -
-                row_counter = row_counter + 1
-            end
+            # replace the missingValueSentinal w/missing -
+            replace!(df[!,col_name],missingValueSentinal=>missing)
         end
 
-        # ok, get only the non-missing cols -
-        df_non_missing = df[:,col_set_to_keep]
-
+        
         # return -
-        return VLResult(df_non_missing)
+        return VLResult(df)
     catch error
         return VLResult(error)
     end
