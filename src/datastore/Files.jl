@@ -45,7 +45,7 @@ function load_study_data_set(filePath::String;
 
             # ok, so let's through -
             bit_array = ismissing.(data_col)
-            idx_one = find(x->x==1,bit_array)
+            idx_one = findall(x->x==1,bit_array)
 
             # if the length(idx_one) => the number of rows, then all rows are missing
             if (length(idx_one) != number_of_rows)
