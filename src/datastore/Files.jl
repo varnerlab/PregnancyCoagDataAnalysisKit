@@ -27,9 +27,10 @@ function load_study_data_set(filePath::String;
         end
 
         # go trhough the cols, are there #N/A
-        for col_name in names(df)
+        (number_of_rows,number_of_cols) = size(df)
+        for col_index = 1:number_of_cols
             # replace the missingValueSentinal w/missing -
-            replace!(df[!,col_name],missingValueSentinal=>missing)
+            replace!(df[!,col_index],missingValueSentinal=>missing)
         end
 
         
