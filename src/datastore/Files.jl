@@ -15,7 +15,7 @@ function extract_minimum_complete_data_set(dataFrame::DataFrame, colNameArray::A
 
         # logic: we need to go through each row, if we econter *any* missing value, then we need stop and throwthat row out
         (number_of_rows, number_of_cols) = size(df_tmp)
-        for row_index = 1:number_of_row
+        for row_index = 1:number_of_rows
             
             # tmp -
             tmp_array = Array{Any,1}()
