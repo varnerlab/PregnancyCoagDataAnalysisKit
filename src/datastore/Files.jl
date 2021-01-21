@@ -27,7 +27,7 @@ function load_study_data_set(filePath::String;
         end
 
         # go trhough the cols, are there #N/A
-        df_missing = DataFrame(replace(Matrix(df), missingValueSentinal=>missing))
+        df_missing = DataFrame(replace(Matrix(df), "$(missingValueSentinal)"=>missing))
 
         # return -
         return VLResult(df)
