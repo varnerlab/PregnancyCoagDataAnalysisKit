@@ -7,7 +7,8 @@ function load_study_data_set(filePath::String;
     removeMissingColumn::Bool = true, missingValueSentinal::String = "#N/A")::VLResult
 
     # initialize -
-    col_set_to_keep = Array{String,1}()
+    col_to_keep_array = Array{Int64,1}()
+    row_to_keep_array = Array{Int64,1}()
 
     try 
         
@@ -20,17 +21,43 @@ function load_study_data_set(filePath::String;
         # ok, if we get here we can load the file -
         df = CSV.read(filePath, DataFrame)
 
-        # if removeMissingColumn = true, then lets go through each col of the data set.
-        # if *all* the values in the col are missing, then remove that col -
-        if (removeMissingColumn == false)
-            return VLResult(df)
-        end
+        # what are the original names?
+        col_name_array = names(df)
 
         # go trhough the cols, are there #N/A
         df_missing = DataFrame(replace(Matrix(df), "$(missingValueSentinal)"=>missing))
 
+        # update the col headers, to set back the original names -
+        rename!(df_missing, col_name_array)
+
+        # if removeMissingColumn = true, then lets go through each col of the data set.
+        # if *all* the values in the col are missing, then remove that col -
+        if (removeMissingColumn == false)
+            return VLResult(df_missing)
+        end
+
+        # process cols -
+        (number_of_rows,number_of_cols) = size(df_missing)
+        for col_index = 1:number_of_cols
+            
+            # grab the col -
+            data_col = df_missing[!,col_index]
+
+            # ok, so let's through -
+            bit_array = ismissing.(data_col)
+            idx_one = find(x->x==1,bit_array)
+
+            # if the length(idx_one) => the number of rows, then all rows are missing
+            if (length(idx_one) != number_of_rows)
+                push!(col_to_keep_array, col_index)
+            end
+        end
+
+        # grab the no-missing cols -
+        df_populated_cols = df_missing[!,col_to_keep_array]
+
         # return -
-        return VLResult(df_missing)
+        return VLResult(df_populated_cols)
     catch error
         return VLResult(error)
     end
