@@ -18,8 +18,7 @@ function ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{
 
         # compute the parameters vector -
         XT = transpose(X)
-        A = inv(XT*X)
-        theta = A*XT*outputVector
+        theta = inv(XT*X)*XT*outputVector
 
         # return -
         return VLResult(theta)
