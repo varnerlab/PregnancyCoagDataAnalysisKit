@@ -50,7 +50,7 @@ function evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Flo
         X = [1.0 transpose(dataMatrix)]
 
         # compute the predicted classification -
-        prob = classifierFunction(parameters, dataVector)
+        prob = classifierFunction(parameters, X)
 
         # return -
         return VLResult(prob)
