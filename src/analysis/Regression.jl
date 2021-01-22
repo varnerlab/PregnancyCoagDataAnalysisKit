@@ -34,6 +34,8 @@ function _obj_function_logistics_regression(parameters::Array{Float64,1}, labels
     # compute log liklehood -
     LL = -log(prod(term_array[:,3]))
 
+    @show LL
+
     # return -
     return LL
 end
