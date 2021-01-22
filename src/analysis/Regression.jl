@@ -13,7 +13,7 @@ function _obj_function_logistics_regression(parameters::Array{Float64,1}, labels
     # start w/the prob -
     for row_index = 1:number_of_rows
         
-        f = X[row_index,:].*parameters
+        f = sum(X[row_index,:].*parameters)
         T = exp(-f)
         prob_array[row_index] = 1/(1+T)
     end
