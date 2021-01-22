@@ -3,6 +3,7 @@ using DataFrames
 using CSV
 using Statistics
 using LinearAlgebra
+using Optim
 
 # include my codes -
 include(joinpath("base","Types.jl"))
