@@ -46,28 +46,17 @@ function evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Flo
 
     # initialize -
     number_of_rows = 1
-    probArray = Array{Float64,1}(undef, number_of_rows)
 
     try 
 
         ## augment the dataMatrix -
-        X = [ones(number_of_rows) dataMatrix]
+        X = [1.0 dataMatrix]
 
-        # main loop -
-        for row_index = 1:number_of_rows
-
-            # get the dataVector -
-            dataVector = X[row_index,:]
-
-            # compute the predicted classification -
-            predicted_classification = classifierFunction(parameters, dataVector)
-
-            # store -
-            probArray[row_index] = predicted_classification
-        end
+        # compute the predicted classification -
+        prob = classifierFunction(parameters, dataVector)
 
         # return -
-        return VLResult(probArray)
+        return VLResult(prob)
     catch error
         return VLResult(error)
     end
