@@ -34,8 +34,6 @@ function _obj_function_logistics_regression(parameters::Array{Float64,1}, labels
     # compute log liklehood -
     LL = -log(prod(term_array[:,3]))
 
-    @show LL
-
     # return -
     return LL
 end
@@ -59,7 +57,7 @@ function mle_fit_logistic_model_classifier(labelVector::Array{Int64,1}, dataMatr
         opt_result = optimize(OF, initialParameterGuess, LBFGS())
 
         # get the optimal parameters -
-        β = Optim.minimizer(opt_result)[1]
+        β = Optim.minimizer(opt_result)
     
         # return -
         return VLResult(β)
