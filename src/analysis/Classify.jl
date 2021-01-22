@@ -50,9 +50,11 @@ function evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Flo
 
     try 
 
+
+
         # first element is 1 -
         tmp_array[1] = 1.0
-        for (index,value) in dataMatrix
+        for (index,value) in enumerate(dataMatrix)
             tmp_array[index+1] = value
         end
 
