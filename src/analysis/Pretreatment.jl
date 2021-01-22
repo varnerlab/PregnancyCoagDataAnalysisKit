@@ -2,6 +2,7 @@
 # =========================================================================================================== #
 
 # === PUBLIC FUNCTIONS THAT ARE EXPORTED ==================================================================== #
+
 function z_score_transform_data_set(dataFrame::DataFrame,colNameArray::Array{String,1})::VLResult
 
     # initialize -
