@@ -1,5 +1,6 @@
 # === PRIVATE FUNCTIONS THAT ARE NOT EXPORTED =============================================================== #
-function _obj_function_logistics_regression(parameters::Array{Float64,1}, labels::Array{Int64,1}, dataMatrix::Array{Float64,2})::Float64
+function _obj_function_logistics_regression(parameters::Array{Float64,1}, labels::Array{Int64,1}, 
+    dataMatrix::Array{Float64,2})::Float64
 
     # initialize -
     (number_of_rows, number_of_cols) = size(dataMatrix)
@@ -37,9 +38,35 @@ function _obj_function_logistics_regression(parameters::Array{Float64,1}, labels
     # return -
     return LL
 end
+
+function _leave_one_out_logic()
+end
 # =========================================================================================================== #
 
 # === PUBLIC FUNCTIONS THAT ARE EXPORTED ==================================================================== #
+function mle_logistic_model_classifier_cross_validation(labelVector::Array{Int64,1}, dataMatrix::Array{Float64,2}, 
+    numberOfGroups::Int64; selectionFunction::Union{Nothing, Function} = _leave_one_out_logic)::VLResult
+
+    # initialize -
+    (number_of_rows, number_of_cols) = size(dataMatrix)
+
+    try 
+
+        # augment the dataMatrix -
+        X = [ones(number_of_rows) dataMatrix]
+
+        # not sure: we are going to do number_of_rows trials, where we call the selectionFunction each trial
+        for trial_index = 1:numberOfGroups
+            
+
+        
+        end
+
+    catch error
+        return VLResult(error)
+    end
+end
+
 function mle_fit_logistic_model_classifier(labelVector::Array{Int64,1}, dataMatrix::Array{Float64,2})::VLResult
 
     # initialize -
