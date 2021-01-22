@@ -9,7 +9,7 @@ end
 # =========================================================================================================== #
 
 # === PUBLIC FUNCTIONS THAT ARE EXPORTED ==================================================================== #
-function evauate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Float64,2}; 
+function evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Float64,2}; 
     classifierFunction::Union{Nothing,Function} = _logistics_classifier_logic)::VLResult
 
     # initialize -
