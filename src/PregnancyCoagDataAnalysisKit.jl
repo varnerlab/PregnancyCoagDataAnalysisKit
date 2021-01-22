@@ -10,5 +10,6 @@ module PregnancyCoagDataAnalysisKit
     export load_study_data_set
     export extract_minimum_complete_data_set
     export z_score_transform_data_set
+    export ols_fit_linear_model
 
 end # module
