@@ -11,6 +11,6 @@ module PregnancyCoagDataAnalysisKit
     export extract_minimum_complete_data_set
     export z_score_transform_data_set
     export ols_fit_linear_model
-    export mle_fit_logistic_model
+    export mle_fit_logistic_model_classifier
 
 end # module

@@ -40,7 +40,7 @@ end
 # =========================================================================================================== #
 
 # === PUBLIC FUNCTIONS THAT ARE EXPORTED ==================================================================== #
-function mle_fit_logistic_model(labelVector::Array{Int64,1}, dataMatrix::Array{Float64,2})::VLResult
+function mle_fit_logistic_model_classifier(labelVector::Array{Int64,1}, dataMatrix::Array{Float64,2})::VLResult
 
     # initialize -
     (number_of_rows, number_of_cols) = size(dataMatrix)
