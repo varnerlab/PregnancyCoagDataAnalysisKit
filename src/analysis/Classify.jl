@@ -44,13 +44,10 @@ end
 function evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Float64,1}; 
     classifierFunction::Union{Nothing,Function} = _logistics_classifier_logic)::VLResult
 
-    # initialize -
-    number_of_rows = 1
-
     try 
 
-        ## augment the dataMatrix -
-        X = [1.0 dataMatrix]
+        # augment the dataMatrix -
+        X = [1.0 transpose(dataMatrix)]
 
         # compute the predicted classification -
         prob = classifierFunction(parameters, dataVector)
