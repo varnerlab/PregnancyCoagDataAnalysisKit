@@ -45,7 +45,7 @@ function evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Flo
     classifierFunction::Union{Nothing,Function} = _logistics_classifier_logic)::VLResult
 
     # initialize -
-    (number_of_rows, number_of_cols) = size(dataMatrix)
+    number_of_rows = 1
     probArray = Array{Float64,1}(undef, number_of_rows)
 
     try 
