@@ -67,7 +67,7 @@ function load_study_data_set(filePath::String;
         col_name_array = names(df)
 
         # go trhough the cols, are there #N/A
-        df_missing = DataFrame(replace(Matrix(df), "$(missingValueSentinal)"=>missing))
+        df_missing = DataFrame(replace(convert(Matrix, df), "$(missingValueSentinal)"=>missing))
 
         # update the col headers, to set back the original names -
         rename!(df_missing, col_name_array)
