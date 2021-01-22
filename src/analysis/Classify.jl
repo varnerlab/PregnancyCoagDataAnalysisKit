@@ -56,8 +56,12 @@ function evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Flo
             tmp_array[index+1] = value
         end
 
+        @show "getting here ..."
+
         # compute the predicted classification -
         prob = classifierFunction(parameters, tmp_array)
+
+        @show "probability is ... $(prob)"
 
         # return -
         return VLResult(prob)
