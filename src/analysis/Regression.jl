@@ -54,7 +54,7 @@ function mle_fit_logistic_model_classifier(labelVector::Array{Int64,1}, dataMatr
         initialParameterGuess = 0.1*ones(number_of_cols+1)
 
         # call the optimizer -
-        opt_result = optimize(OF, initialParameterGuess, BFGS())
+        opt_result = optimize(OF, initialParameterGuess, LBFGS())
 
         # get the optimal parameters -
         β = Optim.minimizer(opt_result)[1]
