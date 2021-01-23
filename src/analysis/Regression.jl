@@ -52,15 +52,8 @@ function mle_logistic_model_classifier_cross_validation(labelVector::Array{Int64
 
     try 
 
-        # augment the dataMatrix -
-        X = [ones(number_of_rows) dataMatrix]
-
-        # not sure: we are going to do number_of_rows trials, where we call the selectionFunction each trial
-        for trial_index = 1:numberOfGroups
-            
-
-        
-        end
+        ex = ErrorException("Ooops! mle_logistic_model_classifier_cross_validation not yet implemented.");
+        throw(ex)
 
     catch error
         return VLResult(error)
