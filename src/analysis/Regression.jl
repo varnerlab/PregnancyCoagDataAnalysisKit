@@ -72,7 +72,7 @@ function mle_fit_logistic_model_classifier(labelVector::Array{Int64,1}, dataMatr
         OF(p) = _obj_function_logistics_regression(p,labelVector,dataMatrix)
         
         # setup initial guess -
-        pinitial = 10.0*rand(number_of_cols+1)
+        pinitial = 1.0*ones(number_of_cols+1)
         if (isnothing(initialParameterArray) == false)
             pinitial = initialParameterArray
         end
