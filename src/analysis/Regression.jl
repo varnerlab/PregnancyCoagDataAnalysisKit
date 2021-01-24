@@ -1,6 +1,6 @@
 # === PRIVATE FUNCTIONS THAT ARE NOT EXPORTED =============================================================== #
 function _obj_function_logistics_regression(parameters::Array{Float64,1}, labels::Array{Int64,1}, 
-    dataMatrix::Array{Float64,2})::Float64
+    dataMatrix::Array{Float64,2}, bias::Float64 = 0.0)::Float64
 
     # initialize -
     (number_of_rows, number_of_cols) = size(dataMatrix)
@@ -15,7 +15,7 @@ function _obj_function_logistics_regression(parameters::Array{Float64,1}, labels
     for row_index = 1:number_of_rows
         
         f = sum(X[row_index,:].*parameters)
-        T = exp(-f)
+        T = exp(-(f-bias))
         prob_array[row_index] = 1/(1+T)
     end
     
@@ -62,7 +62,7 @@ end
 
 function mle_fit_logistic_model_classifier(labelVector::Array{Int64,1}, dataMatrix::Array{Float64,2};
     initialParameterArray::Union{Nothing,Array{Float64,1}} = nothing, maxIterations::Int64=10000,
-    showTrace::Bool = false)::VLResult
+    showTrace::Bool = false, bias::Float64=0.0)::VLResult
 
     # initialize -
     (number_of_rows, number_of_cols) = size(dataMatrix)
@@ -70,7 +70,7 @@ function mle_fit_logistic_model_classifier(labelVector::Array{Int64,1}, dataMatr
     try 
 
         # setup the objective function -
-        OF(p) = _obj_function_logistics_regression(p,labelVector,dataMatrix)
+        OF(p) = _obj_function_logistics_regression(p,labelVector,dataMatrix, bias)
         
         # setup initial guess -
         pinitial = 1.0*ones(number_of_cols+1)
