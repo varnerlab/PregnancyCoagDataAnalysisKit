@@ -102,7 +102,7 @@ function ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{
 
         # ok: we need to create the X matrix
         ones_array = ones(number_of_rows)
-        X = [dataMatrix ones_array]
+        X = [ones_array dataMatrix]
 
         # compute the parameters vector -
         XT = transpose(X)
