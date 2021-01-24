@@ -73,14 +73,14 @@ function mle_fit_logistic_model_classifier(labelVector::Array{Int64,1}, dataMatr
         OF(p) = _obj_function_logistics_regression(p,labelVector,dataMatrix, bias)
         
         # setup initial guess -
-        pinitial = 1.0*ones(number_of_cols+1)
+        pinitial = 0.1*ones(number_of_cols+1)
         if (isnothing(initialParameterArray) == false)
             pinitial = initialParameterArray
         end
 
         # call the optimizer -
-        opt_result = optimize(OF, pinitial, ParticleSwarm(n_particles = round(2*(number_of_cols+1))), 
-            Optim.Options(iterations=maxIterations, show_trace = showTrace))
+        opt_result = optimize(OF, pinitial, LBGFS(), 
+            Optim.Options(iterations=maxIterations, show_trace=showTrace))
 
         # get the optimal parameters -
         β = Optim.minimizer(opt_result)
