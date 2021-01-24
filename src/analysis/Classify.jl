@@ -1,8 +1,8 @@
 # === PRIVATE FUNCTIONS THAT ARE NOT EXPORTED =============================================================== #
-function _logistics_classifier_logic(parameters::Array{Float64,1}, dataVector::Array{Float64,1})::Float64
+function _logistics_classifier_logic(parameters::Array{Float64,1}, dataVector::Array{Float64,1}, bias::Float64)::Float64
 
     f = sum(dataVector.*parameters)
-    T = exp(-f)
+    T = exp(-(f+bias))
     prob_value = 1/(1+T)
     return prob_value
 end
@@ -42,7 +42,7 @@ function evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Flo
 end
 
 function evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Float64,1}; 
-    classifierFunction::Union{Nothing,Function} = _logistics_classifier_logic)::VLResult
+    classifierFunction::Union{Nothing,Function} = _logistics_classifier_logic, bias::Float64 = 0.0)::VLResult
 
     # what is the length -
     number_of_cols = length(dataMatrix)
@@ -57,7 +57,7 @@ function evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Flo
         end
 
         # compute the predicted classification -
-        prob = classifierFunction(parameters, tmp_array)
+        prob = classifierFunction(parameters, tmp_array, bias)
 
         # return -
         return VLResult(prob)
