@@ -23,17 +23,17 @@ function _obj_function_logistics_regression(parameters::Array{Float64,1}, labels
     for row_index = 1:number_of_rows
         
         # compute term 1 and 2 -
-        term_1_value = (prob_array[row_index])^(labels[row_index])
-        term_2_value = (1 - prob_array[row_index])^(1 - labels[row_index])
+        term_1_value = labels[row_index]*log(prob_array[row_index])
+        term_2_value = (1 - labels[row_index])*log((1 - prob_array[row_index]))
 
         # package -
         term_array[row_index,1] = term_1_value
         term_array[row_index,2] = term_2_value
-        term_array[row_index,3] = (term_1_value)*(term_2_value)
+        term_array[row_index,3] = term_1_value + term_2_value
     end
     
     # compute log liklehood -
-    LL = -log(prod(term_array[:,3]))
+    LL = -1*sum(term_array[:,3])
 
     # return -
     return LL
