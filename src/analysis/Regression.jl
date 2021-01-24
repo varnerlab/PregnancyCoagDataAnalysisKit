@@ -78,7 +78,8 @@ function mle_fit_logistic_model_classifier(labelVector::Array{Int64,1}, dataMatr
         end
 
         # call the optimizer -
-        opt_result = optimize(OF, pinitial, NelderMead(), iterations=interations)
+        opt_result = optimize(OF, pinitial, NelderMead(), 
+            Optim.Options(iterations=interations))
 
         # get the optimal parameters -
         β = Optim.minimizer(opt_result)
