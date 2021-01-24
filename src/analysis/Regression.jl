@@ -61,7 +61,7 @@ function mle_logistic_model_classifier_cross_validation(labelVector::Array{Int64
 end
 
 function mle_fit_logistic_model_classifier(labelVector::Array{Int64,1}, dataMatrix::Array{Float64,2};
-    initialParameterArray::Union{Nothing,Array{Float64,1}} = nothing)::VLResult
+    initialParameterArray::Union{Nothing,Array{Float64,1}} = nothing, interations::Int64=10000)::VLResult
 
     # initialize -
     (number_of_rows, number_of_cols) = size(dataMatrix)
@@ -78,7 +78,7 @@ function mle_fit_logistic_model_classifier(labelVector::Array{Int64,1}, dataMatr
         end
 
         # call the optimizer -
-        opt_result = optimize(OF, pinitial, NelderMead())
+        opt_result = optimize(OF, pinitial, NelderMead(), iterations=interations)
 
         # get the optimal parameters -
         β = Optim.minimizer(opt_result)
