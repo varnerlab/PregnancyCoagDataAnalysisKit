@@ -13,10 +13,7 @@ function _obj_function_logistics_regression(parameters::Array{Float64,1}, labels
     # ok, so let's compute the log liklehood -
     # start w/the prob -
     for row_index = 1:number_of_rows
-        
-        f = sum(X[row_index,:].*parameters)
-        T = exp(-(f-bias))
-        prob_array[row_index] = 1/(1+T)
+        prob_array[row_index] = _logistics_classifier_logic(parameters, X[row_index,:], bias)
     end
     
     # compute the term array -
@@ -26,14 +23,28 @@ function _obj_function_logistics_regression(parameters::Array{Float64,1}, labels
         term_1_value = labels[row_index]*log(prob_array[row_index])
         term_2_value = (1 - labels[row_index])*log((1 - prob_array[row_index]))
 
+        if (isnan(term_1_value) == true)
+            term_1_value = 0.0
+        end
+
+        if (isnan(term_2_value) == true)
+            term_2_value = 0.0
+        end
+
         # package -
         term_array[row_index,1] = term_1_value
         term_array[row_index,2] = term_2_value
         term_array[row_index,3] = term_1_value + term_2_value
     end
     
+    # check for inf -
+    tmp = sum(term_array[:,3])
+    if (isinf(tmp) == true)
+        tmp = 0.0
+    end
+
     # compute log liklehood -
-    LL = -1*sum(term_array[:,3])
+    LL = -1*tmp
 
     # return -
     return LL
@@ -79,7 +90,7 @@ function mle_fit_logistic_model_classifier(labelVector::Array{Int64,1}, dataMatr
         end
 
         # call the optimizer -
-        opt_result = optimize(OF, pinitial, LBFGS(), 
+        opt_result = optimize(OF, pinitial, NelderMead(), 
             Optim.Options(iterations=maxIterations, show_trace=showTrace))
 
         # get the optimal parameters -

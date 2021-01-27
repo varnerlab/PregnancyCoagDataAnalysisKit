@@ -10,7 +10,7 @@ end
 
 # === PUBLIC FUNCTIONS THAT ARE EXPORTED ==================================================================== #
 function evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Float64,2}; 
-    classifierFunction::Union{Nothing,Function} = _logistics_classifier_logic)::VLResult
+    classifierFunction::Union{Nothing,Function} = _logistics_classifier_logic, bias::Float64 = 0.0)::VLResult
 
     # initialize -
     (number_of_rows, number_of_cols) = size(dataMatrix)
@@ -28,7 +28,7 @@ function evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Flo
             dataVector = X[row_index,:]
 
             # compute the predicted classification -
-            predicted_classification = classifierFunction(parameters, dataVector)
+            predicted_classification = classifierFunction(parameters, dataVector, bias)
 
             # store -
             probArray[row_index] = predicted_classification
