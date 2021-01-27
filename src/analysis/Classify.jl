@@ -2,7 +2,7 @@
 function _logistics_classifier_logic(parameters::Array{Float64,1}, dataVector::Array{Float64,1}, bias::Float64)::Float64
 
     f = sum(dataVector.*parameters)
-    T = exp(-(f+bias))
+    T = exp(-(f-bias))
     prob_value = 1/(1+T)
     return prob_value
 end
