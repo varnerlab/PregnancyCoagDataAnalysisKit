@@ -8,7 +8,6 @@ using Statistics
 using StatsBase
 using LinearAlgebra
 using Optim
-using Documenter
 
 
 # include my codes -
