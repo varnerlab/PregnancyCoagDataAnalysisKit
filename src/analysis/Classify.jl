@@ -9,6 +9,10 @@ end
 # =========================================================================================================== #
 
 # === PUBLIC FUNCTIONS THAT ARE EXPORTED ==================================================================== #
+"""
+evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Float64,2}; 
+    classifierFunction::Union{Nothing,Function} = _logistics_classifier_logic, bias::Float64 = 0.0)::VLResult
+"""
 function evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Float64,2}; 
     classifierFunction::Union{Nothing,Function} = _logistics_classifier_logic, bias::Float64 = 0.0)::VLResult
 
@@ -41,6 +45,10 @@ function evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Flo
     end
 end
 
+"""
+evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Float64,1}; 
+    classifierFunction::Union{Nothing,Function} = _logistics_classifier_logic, bias::Float64 = 0.0)::VLResult
+"""
 function evaluate_classifier(parameters::Array{Float64,1}, dataMatrix::Array{Float64,1}; 
     classifierFunction::Union{Nothing,Function} = _logistics_classifier_logic, bias::Float64 = 0.0)::VLResult
 

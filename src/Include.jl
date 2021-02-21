@@ -1,9 +1,14 @@
+# setup activate -
+# ...
+
 # declare external packages -
 using DataFrames
 using CSV
 using Statistics
+using StatsBase
 using LinearAlgebra
 using Optim
+
 
 # include my codes -
 include(joinpath("base","Types.jl"))

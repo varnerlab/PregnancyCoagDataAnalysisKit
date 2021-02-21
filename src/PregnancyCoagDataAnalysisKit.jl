@@ -9,10 +9,19 @@ module PregnancyCoagDataAnalysisKit
     # export functions -
     export load_study_data_set
     export extract_minimum_complete_data_set
+    export evaluate_classifier
+
+    # data transform -
     export z_score_transform_data_set
-    export ols_fit_linear_model
+    export z_score_transform_array
+    export z_score_transform_vector
+
+    # mle classifier -
     export mle_fit_logistic_model_classifier
     export mle_logistic_model_classifier_cross_validation
-    export evaluate_classifier
+
+    # ols methods -
+    export ols_fit_linear_model
+    export ols_fit_linear_model_cross_validation
     
 end # module

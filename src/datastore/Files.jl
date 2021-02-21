@@ -3,6 +3,9 @@
 # =========================================================================================================== #
 
 # === PUBLIC FUNCTIONS THAT ARE EXPORTED ==================================================================== #
+"""
+    extract_minimum_complete_data_set(dataFrame::DataFrame, colNameArray::Array{String,1})::VLResult
+"""
 function extract_minimum_complete_data_set(dataFrame::DataFrame, colNameArray::Array{String,1})::VLResult
 
     # initialize -
@@ -44,7 +47,10 @@ function extract_minimum_complete_data_set(dataFrame::DataFrame, colNameArray::A
 
 end
 
-
+"""
+load_study_data_set(filePath::String; 
+    removeMissingColumn::Bool = true, missingValueSentinal::String = "#N/A")::VLResult
+"""
 function load_study_data_set(filePath::String; 
     removeMissingColumn::Bool = true, missingValueSentinal::String = "#N/A")::VLResult
 
