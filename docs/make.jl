@@ -1,6 +1,11 @@
 using Documenter, PregnancyCoagDataAnalysisKit
 
-makedocs(sitename="Documentation")
+makedocs(sitename="Documentation", 
+    pages=[
+        "Regression" => "regression.md",
+        "Pretreatment" => "pretreatment.md"
+    ]
+)
 
 # Documenter can also automatically deploy documentation to gh-pages.
 # See "Hosting Documentation" and deploydocs() in the Documenter manual

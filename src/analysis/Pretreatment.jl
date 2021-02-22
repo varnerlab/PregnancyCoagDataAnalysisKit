@@ -105,7 +105,7 @@ function z_score_transform_vector(dataVector::Array{Float64,1})::VLResult
 
         # rerurn -
         return VLResult(z_score_array)
-        
+
     catch error
         return VLResult(error)
     end

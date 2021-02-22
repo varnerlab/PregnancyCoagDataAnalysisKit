@@ -84,10 +84,10 @@ end
 # === PUBLIC FUNCTIONS THAT ARE EXPORTED ==================================================================== #
 """
     mle_logistic_model_classifier_cross_validation(labelVector::Array{Int64,1}, dataMatrix::Array{Float64,2}, 
-        numberOfGroups::Int64; selectionFunction::Union{Nothing, Function} = _leave_one_out_logic)::VLResult
+        numberOfGroups::Int64; selectionFunction::Union{Nothing, Function} = nothing)::VLResult
 """
 function mle_logistic_model_classifier_cross_validation(labelVector::Array{Int64,1}, dataMatrix::Array{Float64,2}, 
-    numberOfGroups::Int64; selectionFunction::Union{Nothing, Function} = _leave_one_out_logic)::VLResult
+    numberOfGroups::Int64; selectionFunction::Union{Nothing, Function} = nothing)::VLResult
 
     # initialize -
     (number_of_rows, number_of_cols) = size(dataMatrix)
