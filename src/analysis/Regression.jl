@@ -228,9 +228,11 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
             
             # pass the full data set, and the group index to the selection function
             # the selectionFunction gives back the output and input arrsy -
-            selection_tuple = mySelectionFunction(group_index,outputVector,dataMatrix)
-            Yhat = selection_tuple.output_vector
-            Xhat = selection_tuple.input_matrix
+            # selection_tuple = mySelectionFunction(group_index,outputVector,dataMatrix)
+            # Yhat = selection_tuple.output_vector
+            # Xhat = selection_tuple.input_matrix
+            Yhat = outputVector
+            Xhat = dataMatrix
 
             # so let's scale these things -
             
