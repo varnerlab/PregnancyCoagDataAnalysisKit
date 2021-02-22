@@ -218,7 +218,7 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
         end
 
         # initialize storage -
-        parameter_storage_array = zeros(number_of_cols, numberOfGroups)
+        parameter_storage_array = zeros((number_of_cols + 1), numberOfGroups)
         total_residual_array = Array{Float64,1}()
         total_correlation_array = Array{Float64,1}()
         model_prediction_array = zeros(number_of_rows, numberOfGroups)
@@ -228,11 +228,11 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
             
             # pass the full data set, and the group index to the selection function
             # the selectionFunction gives back the output and input arrsy -
-            # selection_tuple = mySelectionFunction(group_index,outputVector,dataMatrix)
-            # Yhat = selection_tuple.output_vector
-            # Xhat = selection_tuple.input_matrix
-            Yhat = outputVector
-            Xhat = dataMatrix
+            selection_tuple = mySelectionFunction(group_index,outputVector,dataMatrix)
+            Yhat = selection_tuple.output_vector
+            Xhat = selection_tuple.input_matrix
+            #Yhat = outputVector
+            #Xhat = dataMatrix
 
             # so let's scale these things -
             
@@ -266,7 +266,7 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
 
             # put the parameters in storage -
             for (parameter_index,parameter_value) in enumerate(theta_parameters)
-                parameter_storage_array[parameter_index,group_index] = parameter_value
+                parameter_storage_array[parameter_index, group_index] = parameter_value
             end
 
             # grab the residual and other stuff for this group -
