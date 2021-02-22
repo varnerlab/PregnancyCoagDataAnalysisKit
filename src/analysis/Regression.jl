@@ -222,7 +222,7 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
         total_residual_array = Array{Float64,1}()
         total_correlation_array = Array{Float64,1}()
         model_prediction_array = zeros(number_of_rows, numberOfGroups)
-        selection_index_archive = Array{Array{Int64,1}}()
+        selection_index_archive = Array{Array{Int64,1},1}()
         
         # ok, lets go ...
         for group_index = 1:numberOfGroups
