@@ -193,8 +193,9 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
         end
 
         # check: if selectionFunction == nothing, then use _leave_one_out_logic -
-        if (isnothing(selectionFunction) == true)
-            selectionFunction = _leave_one_out_logic
+        mySelectionFunction = _leave_one_out_logic
+        if (isnothing(selectionFunction) == false)
+            mySelectionFunction = selectionFunction
         end
 
         # initialize storage -
@@ -208,7 +209,7 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
             
             # pass the full data set, and the group index to the selection function
             # the selectionFunction gives back the output and input arrsy -
-            selection_tuple = selectionFunction(group_index,outputVector,dataMatrix)
+            selection_tuple = mySelectionFunction(group_index,outputVector,dataMatrix)
             Yhat = selection_tuple.output_vector
             Xhat = selection_tuple.input_matrix
 
