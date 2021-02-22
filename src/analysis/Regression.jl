@@ -222,6 +222,7 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
         total_residual_array = Array{Float64,1}()
         total_correlation_array = Array{Float64,1}()
         model_prediction_array = zeros(number_of_rows, numberOfGroups)
+        selection_index_archive = Array{Array{Int64,1}}()
         
         # ok, lets go ...
         for group_index = 1:numberOfGroups
@@ -233,7 +234,8 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
             Xhat = selection_tuple.input_matrix
             selection_index_array = selection_tuple.index_array
 
-            # so let's scale these things -
+            # cache the selection index buffer -
+            push!(selection_index_archive, selection_index_array)
             
             # YHat -
             scale_result = z_score_transform_vector(Yhat)
@@ -277,7 +279,8 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
         # return the results in a NamedTuple -
         results_tuple = (correlation=total_correlation_array,
             residual=total_residual_array,parameters=parameter_storage_array,
-            model_prediction=model_prediction_array)
+            model_prediction=model_prediction_array, 
+            selection_index_archive=selection_index_archive)
 
         # return -
         return VLResult(results_tuple)
