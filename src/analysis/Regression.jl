@@ -66,7 +66,7 @@ function _leave_one_out_logic(index::Int64, outputVector::Array{Float64,1}, data
     Xhat = dataMatrix[idx_missing_index_array,:]
 
     # package and return -
-    results_tuple = (output_vector=Yhat, input_matrix=Xhat)
+    results_tuple = (output_vector=Yhat, input_matrix=Xhat, index_array=idx_missing_index_array)
 
     # return -
     return results_tuple
@@ -231,8 +231,7 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
             selection_tuple = mySelectionFunction(group_index,outputVector,dataMatrix)
             Yhat = selection_tuple.output_vector
             Xhat = selection_tuple.input_matrix
-            #Yhat = outputVector
-            #Xhat = dataMatrix
+            selection_index_array = selection_tuple.index_array
 
             # so let's scale these things -
             
@@ -261,7 +260,8 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
 
             # capture the model output -
             for (output_index, output_value) in enumerate(model_output)
-                model_prediction_array[output_index, group_index] = output_value
+                real_index = selection_index_array[output_index]
+                model_prediction_array[real_index, group_index] = output_value
             end
 
             # put the parameters in storage -
