@@ -222,6 +222,7 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
         total_residual_array = Array{Float64,1}()
         total_correlation_array = Array{Float64,1}()
         model_prediction_array = zeros(number_of_rows, numberOfGroups)
+        measured_output_array = zeros(number_of_rows, numberOfGroups)
         selection_index_archive = Array{Array{Int64,1},1}()
         
         # ok, lets go ...
@@ -266,6 +267,12 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
                 model_prediction_array[real_index, group_index] = output_value
             end
 
+            # capture the measured output -
+            for (output_index, output_value) in enumerate(Yhat_z_scaled)
+                real_index = selection_index_array[output_index]
+                measured_output_array[real_index, group_index] = output_value
+            end
+
             # put the parameters in storage -
             for (parameter_index,parameter_value) in enumerate(theta_parameters)
                 parameter_storage_array[parameter_index, group_index] = parameter_value
@@ -280,6 +287,7 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
         results_tuple = (correlation=total_correlation_array,
             residual=total_residual_array,parameters=parameter_storage_array,
             model_prediction=model_prediction_array, 
+            measured_output_array = measured_output_array,
             selection_index_archive=selection_index_archive)
 
         # return -
