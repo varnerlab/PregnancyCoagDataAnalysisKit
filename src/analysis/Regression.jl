@@ -50,7 +50,26 @@ function _obj_function_logistics_regression(parameters::Array{Float64,1}, labels
     return LL
 end
 
-function _leave_one_out_logic(index::Int64,outputVector::Array{Float64,1}, dataMatrix::Array{Float64,2})::NamedTuple
+function _leave_one_out_logic(index::Int64, outputVector::Array{Float64,1}, dataMatrix::Array{Float64,2})::NamedTuple
+
+    # ok, so need to impl leave one out -
+    (number_of_rows, number_of_cols) = size(dataMatrix)
+
+    # generate the "full" range -
+    idx_full_index_array = range(1,stop=number_of_rows,step=1) |> collect
+
+    # generate index array with a row = index missing -
+    idx_missing_index_array = setdiff(idx_full_index_array, index)
+
+    # collect -
+    Yhat = outputVector[idx_missing_index_array]
+    Xhat = dataMatrix[idx_missing_index_array,:]
+
+    # package and return -
+    results_tuple = (output_vector=Yhat, input_matrix=Xhat)
+
+    # return -
+    return results_tuple
 end
 
 function _evaluate_ols_linear_model(outputArray::Array{Float64,1}, dataMatrix::Array{Float64,2}, 
