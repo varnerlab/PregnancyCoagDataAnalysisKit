@@ -195,7 +195,8 @@ end
     ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{Float64,2})::VLResult    
 """
 function ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{Float64,2}; 
-    initialParameterArray::Union{Nothing,Array{Float64,1}} = nothing)::VLResult
+    initialParameterArray::Union{Nothing,Array{Float64,1}} = nothing, maxIterations::Int64=10000,
+    showTrace::Bool = false)::VLResult
 
     # initialize -
     (number_of_rows, number_of_cols) = size(dataMatrix)
