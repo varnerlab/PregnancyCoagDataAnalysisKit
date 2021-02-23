@@ -281,7 +281,7 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
             # capture the model output -
             for (output_index, output_value) in enumerate(model_output)
                 real_index = selection_index_array[output_index]
-                model_prediction_array[real_index, group_index] = output_value
+                model_training_array[real_index, group_index] = output_value
             end
 
 
