@@ -50,6 +50,19 @@ function _obj_function_logistics_regression(parameters::Array{Float64,1}, labels
     return LL
 end
 
+function _obj_function_linear_regression(parameters::Array{Float64,1}, outputVector::Array{Float64,1}, 
+    dataMatrix::Array{Float64,2})::Float64
+
+    # compute the Y_model -
+    results_tuple = _evaluate_ols_linear_model(outputVector, dataMatrix, parameters)
+
+    # the results_tuple contains the residual_value already (yes!)
+    rms_error = results_tuple.residual
+
+    # return -
+    return rms_error
+end
+
 function _leave_one_out_logic(index::Int64, outputVector::Array{Float64,1}, dataMatrix::Array{Float64,2})::NamedTuple
 
     # ok, so need to impl leave one out -
@@ -181,31 +194,37 @@ end
 """
     ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{Float64,2})::VLResult    
 """
-function ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{Float64,2})::VLResult
+function ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{Float64,2}; 
+    initialParameterArray::Union{Nothing,Array{Float64,1}} = nothing)::VLResult
 
     # initialize -
     (number_of_rows, number_of_cols) = size(dataMatrix)
 
     try 
 
-        # check: dimension mismatch -
-        # ...
+        # setup the obj function -
+        OF(p) = _obj_function_logistics_regression(p,outputVector,dataMatrix)
 
-        # ok: we need to create the X matrix
-        ones_array = ones(number_of_rows)
-        X = [ones_array dataMatrix]
-
-        # compute the parameters vector -
-        XT = transpose(X)
-        theta = inv(XT*X)*XT*outputVector
+        # setup initial guess -
+        pinitial = 0.1*ones(number_of_cols+1)
+        if (isnothing(initialParameterArray) == false)
+            pinitial = initialParameterArray
+        end
+ 
+        # call the optimizer -
+        opt_result = optimize(OF, pinitial, NelderMead(), 
+            Optim.Options(iterations=maxIterations, show_trace=showTrace))
+ 
+        # get the optimal parameters -
+        β = Optim.minimizer(opt_result)
 
         # compute some performance stuff -
-        performance_tuple = _evaluate_ols_linear_model(outputVector,dataMatrix,theta)
+        performance_tuple = _evaluate_ols_linear_model(outputVector,dataMatrix,β)
 
         # setup results tuple -
         results_tuple = (model_prediction=performance_tuple.model_prediction, 
             correlation=performance_tuple.correlation, residual=performance_tuple.residual, 
-            parameters=theta)
+            parameters=β)
 
         # return -
         return VLResult(results_tuple)
