@@ -268,7 +268,7 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
             end
 
             # capture the measured output -
-            for (output_index, output_value) in enumerate(Yhat_z_scaled)
+            for (output_index, output_value) in enumerate(Yhat)
                 real_index = selection_index_array[output_index]
                 measured_output_array[real_index, group_index] = output_value
             end
