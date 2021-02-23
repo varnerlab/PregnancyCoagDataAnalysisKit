@@ -274,9 +274,9 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
             model_output = performance_tuple.model_prediction
 
             # compute the prediction -
-            prediction_model_result = _evaluate_ols_linear_model(Yhat[prediction_index_array],
-                Xhat[prediction_index_array,:], theta_parameters)
-            Y_prediction = prediction_model_result.model_prediction
+            # prediction_model_result = _evaluate_ols_linear_model(Yhat[prediction_index_array],
+            #     Xhat[prediction_index_array,:], theta_parameters)
+            # Y_prediction = prediction_model_result.model_prediction
 
             # capture the model output -
             for (output_index, output_value) in enumerate(model_output)
@@ -286,7 +286,7 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
 
 
             # capture the predicted output -
-            push!(model_prediction_archive,Y_prediction)
+            # push!(model_prediction_archive,Y_prediction)
 
             # capture the measured output -
             for (output_index, output_value) in enumerate(Yhat)
