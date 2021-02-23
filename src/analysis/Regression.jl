@@ -62,7 +62,8 @@ function _leave_one_out_logic(index::Int64, outputVector::Array{Float64,1}, data
     idx_missing_index_array = setdiff(idx_full_index_array, index)
 
     # what index's did we leave out?
-    prediction_index_array = [index]
+    prediction_index_array = Array{Int64,1}()
+    push!(prediction_index_array, index)
 
     # collect -
     Yhat = outputVector[idx_missing_index_array]
