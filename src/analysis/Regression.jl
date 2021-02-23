@@ -239,21 +239,21 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
             push!(selection_index_archive, selection_index_array)
             
             # YHat -
-            scale_result = z_score_transform_vector(Yhat)
-            if (isa(scale_result.value,Exception) == true)
-                throw(scale_result.value)
-            end
-            Yhat_z_scaled = scale_result.value
+            # scale_result = z_score_transform_vector(Yhat)
+            # if (isa(scale_result.value,Exception) == true)
+            #     throw(scale_result.value)
+            # end
+            # Yhat_z_scaled = scale_result.value
             
-            # Input array -
-            scale_result = z_score_transform_array(Xhat)
-            if (isa(scale_result.value,Exception) == true)
-                throw(scale_result.value)
-            end
-            Xhat_z_scaled = scale_result.value
+            # # Input array -
+            # scale_result = z_score_transform_array(Xhat)
+            # if (isa(scale_result.value,Exception) == true)
+            #     throw(scale_result.value)
+            # end
+            # Xhat_z_scaled = scale_result.value
 
             # fit the model -
-            fit_model_result = ols_fit_linear_model(Yhat_z_scaled, Xhat_z_scaled)
+            fit_model_result = ols_fit_linear_model(Yhat, Xhat)
             if (isa(fit_model_result.value,Exception) == true)
                 throw(fit_model_result.value)
             end
@@ -287,7 +287,7 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
         results_tuple = (correlation=total_correlation_array,
             residual=total_residual_array,parameters=parameter_storage_array,
             model_prediction=model_prediction_array, 
-            measured_output_array = measured_output_array,
+            measured_output_array=measured_output_array,
             selection_index_archive=selection_index_archive)
 
         # return -
