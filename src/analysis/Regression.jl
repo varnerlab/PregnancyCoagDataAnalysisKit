@@ -83,9 +83,8 @@ function _evaluate_ols_linear_model(dataMatrix::Array{Float64,1}, paramaterArray
     # initialize -
     number_of_rows = length(dataMatrix)
 
-    # augement the data array 0
-    ones_array = ones(number_of_rows)
-    X = [ones_array transpose(dataMatrix)]
+    # augement the data array 1
+    X = [1.0 transpose(dataMatrix)]
 
     # compute the Y_model -
     Y_model = X*paramaterArray
