@@ -233,7 +233,7 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
         total_residual_array = Array{Float64,1}()
         total_correlation_array = Array{Float64,1}()
         model_training_array = zeros(number_of_rows, numberOfGroups)
-        model_prediction_archive = Array{Array{Float64,numberOfElementsPerGroup},1}()
+        model_prediction_archive = Array{Array,1}()
         measured_output_array = zeros(number_of_rows, numberOfGroups)
         selection_index_archive = Array{Array{Int64,1},1}()
         
@@ -275,8 +275,8 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
             model_output = performance_tuple.model_prediction
 
             # compute the prediction -
-            prediction_model_result = _evaluate_ols_linear_model(Yhat[prediction_index_array],
-                 Xhat[prediction_index_array,:], theta_parameters)
+            prediction_model_result = _evaluate_ols_linear_model(Yhat[group_index],
+                 Xhat[group_index,:], theta_parameters)
             Y_prediction = prediction_model_result.model_prediction
 
             # capture the model output -
