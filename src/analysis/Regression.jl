@@ -78,6 +78,21 @@ function _leave_one_out_logic(index::Int64, outputVector::Array{Float64,1}, data
     return results_tuple
 end
 
+function _evaluate_ols_linear_model(dataMatrix::Array{Float64,1}, paramaterArray::Array{Float64,1})::Float64
+
+    # initialize -
+    number_of_rows = length(dataMatrix)
+
+    # augement the data array 0
+    ones_array = ones(number_of_rows)
+    X = [ones_array dataMatrix]
+
+    # compute the Y_model -
+    Y_model = X*paramaterArray
+
+    return Y_model
+end
+
 function _evaluate_ols_linear_model(outputArray::Array{Float64,1}, dataMatrix::Array{Float64,2}, 
     paramaterArray::Array{Float64,1})::NamedTuple
 
@@ -274,10 +289,8 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
             theta_parameters = performance_tuple.parameters
             model_output = performance_tuple.model_prediction
 
-            # compute the prediction -
-            prediction_model_result = _evaluate_ols_linear_model(Yhat[group_index],
-                 Xhat[group_index,:], theta_parameters)
-            Y_prediction = prediction_model_result.model_prediction
+            # compute the prediction - leave 1 out for now ...
+            Y_prediction = _evaluate_ols_linear_model(Xhat[group_index,:], theta_parameters)
 
             # capture the model output -
             for (output_index, output_value) in enumerate(model_output)
