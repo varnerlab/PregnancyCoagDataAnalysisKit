@@ -204,7 +204,7 @@ function ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{
     try 
 
         # setup the obj function -
-        OF(p) = _obj_function_logistics_regression(p,outputVector,dataMatrix)
+        OF(p) = _obj_function_linear_regression(p,outputVector,dataMatrix)
 
         # setup initial guess -
         pinitial = 0.1*ones(number_of_cols+1)
