@@ -289,7 +289,7 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
             model_output = performance_tuple.model_prediction
 
             # compute the prediction - leave 1 out for now ...
-            Y_prediction = _evaluate_ols_linear_model(Xhat[group_index,:], theta_parameters)
+            Y_prediction = _evaluate_ols_linear_model(dataMatrix[group_index,:], theta_parameters)
 
             # capture the model output -
             for (output_index, output_value) in enumerate(model_output)
