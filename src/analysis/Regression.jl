@@ -285,7 +285,6 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
                 model_training_array[real_index, group_index] = output_value
             end
 
-
             # capture the predicted output -
             push!(model_prediction_archive,Y_prediction)
 
