@@ -58,15 +58,20 @@ function _leave_one_out_logic(index::Int64, outputVector::Array{Float64,1}, data
     # generate the "full" range -
     idx_full_index_array = range(1,stop=number_of_rows,step=1) |> collect
 
-    # generate index array with a row = index missing -
+    # generate index array with a row = index missing - this is the training index array
     idx_missing_index_array = setdiff(idx_full_index_array, index)
+
+    # what index's did we leave out?
+    prediction_index_array = [index]
 
     # collect -
     Yhat = outputVector[idx_missing_index_array]
     Xhat = dataMatrix[idx_missing_index_array,:]
 
     # package and return -
-    results_tuple = (output_vector=Yhat, input_matrix=Xhat, index_array=idx_missing_index_array)
+    results_tuple = (output_vector=Yhat, input_matrix=Xhat, 
+        training_index_array=idx_missing_index_array,
+        prediction_index_array=prediction_index_array)
 
     # return -
     return results_tuple
@@ -199,7 +204,8 @@ end
         dataMatrix::Array{Float64,2}; numberOfGroups::Int64 = 0, selectionFunction::Union{Nothing, Function} = nothing)::VLResult
 """
 function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1}, 
-    dataMatrix::Array{Float64,2}; numberOfGroups::Int64 = 0, selectionFunction::Union{Nothing, Function} = nothing)::VLResult
+    dataMatrix::Array{Float64,2}; numberOfGroups::Int64 = 0, numberOfElementsPerGroup::Int64 = 0,
+    selectionFunction::Union{Nothing, Function} = nothing)::VLResult
 
     # initialize -
     (number_of_rows, number_of_cols) = size(dataMatrix)
@@ -209,6 +215,10 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
         # check: if numberOfGroups = 0, then set to the number of rows -
         if (numberOfGroups == 0)
             numberOfGroups = number_of_rows
+        end
+
+        if (numberOfElementsPerGroup == 0)
+            numberOfElementsPerGroup = 1
         end
 
         # check: if selectionFunction == nothing, then use _leave_one_out_logic -
@@ -221,7 +231,8 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
         parameter_storage_array = zeros((number_of_cols + 1), numberOfGroups)
         total_residual_array = Array{Float64,1}()
         total_correlation_array = Array{Float64,1}()
-        model_prediction_array = zeros(number_of_rows, numberOfGroups)
+        model_training_array = zeros(number_of_rows, numberOfGroups)
+        model_prediction_archive = Array{Array{Float64,numberOfElementsPerGroup},1}()
         measured_output_array = zeros(number_of_rows, numberOfGroups)
         selection_index_archive = Array{Array{Int64,1},1}()
         
@@ -233,7 +244,8 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
             selection_tuple = mySelectionFunction(group_index,outputVector,dataMatrix)
             Yhat = selection_tuple.output_vector
             Xhat = selection_tuple.input_matrix
-            selection_index_array = selection_tuple.index_array
+            selection_index_array = selection_tuple.training_index_array
+            prediction_index_array = selection_tuple.prediction_index_array
 
             # cache the selection index buffer -
             push!(selection_index_archive, selection_index_array)
@@ -261,11 +273,21 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
             theta_parameters = performance_tuple.parameters
             model_output = performance_tuple.model_prediction
 
+            # compute the prediction -
+            prediction_model_result = _evaluate_ols_linear_model(Yhat[prediction_index_array],
+                Xhat[prediction_index_array,:], theta_parameters)
+            prediction_tuple = prediction_model_result.value
+            Y_prediction = prediction_tuple.model_prediction
+
             # capture the model output -
             for (output_index, output_value) in enumerate(model_output)
                 real_index = selection_index_array[output_index]
                 model_prediction_array[real_index, group_index] = output_value
             end
+
+
+            # capture the predicted output -
+            push!(model_prediction_archive,Y_prediction)
 
             # capture the measured output -
             for (output_index, output_value) in enumerate(Yhat)
@@ -286,7 +308,8 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
         # return the results in a NamedTuple -
         results_tuple = (correlation=total_correlation_array,
             residual=total_residual_array,parameters=parameter_storage_array,
-            model_prediction=model_prediction_array, 
+            model_training_array=model_training_array,
+            model_prediction_array=model_prediction_archive, 
             measured_output_array=measured_output_array,
             selection_index_archive=selection_index_archive)
 
