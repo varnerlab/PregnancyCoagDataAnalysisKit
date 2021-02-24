@@ -1,4 +1,5 @@
 # === PRIVATE FUNCTIONS THAT ARE NOT EXPORTED =============================================================== #
+# Objective functions -
 function _obj_function_logistics_regression(parameters::Array{Float64,1}, labels::Array{Int64,1}, 
     dataMatrix::Array{Float64,2}, bias::Float64 = 0.0)::Float64
 
@@ -63,34 +64,20 @@ function _obj_function_linear_regression(parameters::Array{Float64,1}, outputVec
     return rms_error
 end
 
-function _leave_one_out_logic(index::Int64, outputVector::Array{Float64,1}, dataMatrix::Array{Float64,2})::NamedTuple
+function _obj_function_linear_regression(parameters::Array{Float64,1}, outputVector::Array{Float64,1}, 
+    dataMatrix::Array{Float64,1})::Float64
 
-    # ok, so need to impl leave one out -
-    (number_of_rows, number_of_cols) = size(dataMatrix)
+    # compute the Y_model -
+    results_tuple = _evaluate_ols_linear_model(outputVector, dataMatrix, parameters)
 
-    # generate the "full" range -
-    idx_full_index_array = range(1,stop=number_of_rows,step=1) |> collect
-
-    # generate index array with a row = index missing - this is the training index array
-    idx_missing_index_array = setdiff(idx_full_index_array, index)
-
-    # what index's did we leave out?
-    prediction_index_array = Array{Int64,1}()
-    push!(prediction_index_array, index)
-
-    # collect -
-    Yhat = outputVector[idx_missing_index_array]
-    Xhat = dataMatrix[idx_missing_index_array,:]
-
-    # package and return -
-    results_tuple = (output_vector=Yhat, input_matrix=Xhat, 
-        training_index_array=idx_missing_index_array,
-        prediction_index_array=prediction_index_array)
+    # the results_tuple contains the residual_value already (yes!)
+    rms_error = results_tuple.residual
 
     # return -
-    return results_tuple
+    return rms_error
 end
 
+# evaluate linear model -
 function _evaluate_ols_linear_model(dataMatrix::Array{Float64,1}, paramaterArray::Array{Float64,1})::Float64
 
     # initialize -
@@ -127,6 +114,62 @@ function _evaluate_ols_linear_model(outputArray::Array{Float64,1}, dataMatrix::A
 
     # package -
     results_tuple = (model_prediction=Y_model, residual=residual_value, correlation=correlation_value)
+
+    # return -
+    return results_tuple
+end
+
+function _evaluate_ols_linear_model(outputArray::Array{Float64,1}, dataMatrix::Array{Float64,1}, 
+    paramaterArray::Array{Float64,1})::NamedTuple
+
+    # initialize -
+    number_of_rows = length(outputArray)
+    Y_measured = outputArray
+
+    # augement the data array 0
+    ones_array = ones(number_of_rows)
+    X = [ones_array dataMatrix]
+
+    # compute the Y_model -
+    Y_model = X*paramaterArray
+
+    # what is the correlation?
+    correlation_value = cor(Y_measured, Y_model)
+
+    # what is the residual?
+    residual_value = rmsd(Y_measured, Y_model)
+
+    # package -
+    results_tuple = (model_prediction=Y_model, residual=residual_value, correlation=correlation_value)
+
+    # return -
+    return results_tuple
+end
+
+# default: leave one out logic -
+function _leave_one_out_logic(index::Int64, outputVector::Array{Float64,1}, dataMatrix::Array{Float64,2})::NamedTuple
+
+    # ok, so need to impl leave one out -
+    (number_of_rows, number_of_cols) = size(dataMatrix)
+
+    # generate the "full" range -
+    idx_full_index_array = range(1,stop=number_of_rows,step=1) |> collect
+
+    # generate index array with a row = index missing - this is the training index array
+    idx_missing_index_array = setdiff(idx_full_index_array, index)
+
+    # what index's did we leave out?
+    prediction_index_array = Array{Int64,1}()
+    push!(prediction_index_array, index)
+
+    # collect -
+    Yhat = outputVector[idx_missing_index_array]
+    Xhat = dataMatrix[idx_missing_index_array,:]
+
+    # package and return -
+    results_tuple = (output_vector=Yhat, input_matrix=Xhat, 
+        training_index_array=idx_missing_index_array,
+        prediction_index_array=prediction_index_array)
 
     # return -
     return results_tuple
@@ -186,6 +229,49 @@ function mle_fit_logistic_model_classifier(labelVector::Array{Int64,1}, dataMatr
     
         # return -
         return VLResult(β)
+    catch error
+        return VLResult(error)
+    end
+end
+
+"""
+    ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{Float64,1})::VLResult    
+"""
+function ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{Float64,1}; 
+    initialParameterArray::Union{Nothing,Array{Float64,1}} = nothing, maxIterations::Int64=10000,
+    showTrace::Bool = false)::VLResult
+
+    # initialize -
+    number_of_cols = length(dataMatrix)
+
+    try 
+
+        # setup the obj function -
+        OF(p) = _obj_function_linear_regression(p,outputVector,dataMatrix)
+
+        # setup initial guess -
+        pinitial = 0.1*ones(number_of_cols+1)
+        if (isnothing(initialParameterArray) == false)
+            pinitial = initialParameterArray
+        end
+ 
+        # call the optimizer -
+        opt_result = optimize(OF, pinitial, NelderMead(), 
+            Optim.Options(iterations=maxIterations, show_trace=showTrace))
+ 
+        # get the optimal parameters -
+        β = Optim.minimizer(opt_result)
+
+        # compute some performance stuff -
+        performance_tuple = _evaluate_ols_linear_model(outputVector,dataMatrix,β)
+
+        # setup results tuple -
+        results_tuple = (model_prediction=performance_tuple.model_prediction, 
+            correlation=performance_tuple.correlation, residual=performance_tuple.residual, 
+            parameters=β)
+
+        # return -
+        return VLResult(results_tuple)
     catch error
         return VLResult(error)
     end
