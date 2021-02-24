@@ -242,7 +242,7 @@ function ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{
     showTrace::Bool = false)::VLResult
 
     # initialize -
-    number_of_cols = length(dataMatrix)
+    number_of_cols = 1 # we have a single data col
 
     try 
 
