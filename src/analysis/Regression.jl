@@ -52,13 +52,14 @@ function _obj_function_logistics_regression(parameters::Array{Float64,1}, labels
 end
 
 function _obj_function_linear_regression(parameters::Array{Float64,1}, outputVector::Array{Float64,1}, 
-    dataMatrix::Array{Float64,2})::Float64
+    dataMatrix::Array{Float64,2}, lambda::Float64)::Float64
 
     # compute the Y_model -
     results_tuple = _evaluate_ols_linear_model(outputVector, dataMatrix, parameters)
 
     # the results_tuple contains the residual_value already (yes!)
-    rms_error = results_tuple.residual
+    # we add a "regularization" term (L2 ridge regression) to avoid the overfitting issue -
+    rms_error = results_tuple.residual + (lambda*sum(parameters.^2))
 
     # return -
     return rms_error
@@ -71,7 +72,8 @@ function _obj_function_linear_regression(parameters::Array{Float64,1}, outputVec
     results_tuple = _evaluate_ols_linear_model(outputVector, dataMatrix, parameters)
 
     # the results_tuple contains the residual_value already (yes!)
-    rms_error = results_tuple.residual
+    # we add a "regularization" term (L2 ridge regression) to avoid the overfitting issue -
+    rms_error = results_tuple.residual + (lambda*sum(parameters.^2))
 
     # return -
     return rms_error
@@ -238,7 +240,7 @@ end
     ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{Float64,1})::VLResult    
 """
 function ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{Float64,1}; 
-    initialParameterArray::Union{Nothing,Array{Float64,1}} = nothing, maxIterations::Int64=10000,
+    lambda::Float64 = 0.0, initialParameterArray::Union{Nothing,Array{Float64,1}} = nothing, maxIterations::Int64=10000,
     showTrace::Bool = false)::VLResult
 
     # initialize -
@@ -247,7 +249,7 @@ function ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{
     try 
 
         # setup the obj function -
-        OF(p) = _obj_function_linear_regression(p,outputVector,dataMatrix)
+        OF(p) = _obj_function_linear_regression(p,outputVector,dataMatrix, lambda)
 
         # setup initial guess -
         pinitial = 0.1*ones(number_of_cols+1)
@@ -280,7 +282,7 @@ end
 """
     ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{Float64,2})::VLResult    
 """
-function ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{Float64,2}; 
+function ols_fit_linear_model(outputVector::Array{Float64,1}, dataMatrix::Array{Float64,2}; lambda::Float64 = 0.0,
     initialParameterArray::Union{Nothing,Array{Float64,1}} = nothing, maxIterations::Int64=10000,
     showTrace::Bool = false)::VLResult
 
@@ -325,7 +327,7 @@ end
         dataMatrix::Array{Float64,2}; numberOfGroups::Int64 = 0, selectionFunction::Union{Nothing, Function} = nothing)::VLResult
 """
 function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1}, 
-    dataMatrix::Array{Float64,2}; numberOfGroups::Int64 = 0, numberOfElementsPerGroup::Int64 = 0,
+    dataMatrix::Array{Float64,2}; numberOfGroups::Int64 = 0, numberOfElementsPerGroup::Int64 = 0, lambda::Float64 = 0.0,
     selectionFunction::Union{Nothing, Function} = nothing)::VLResult
 
     # initialize -
@@ -386,7 +388,7 @@ function ols_fit_linear_model_cross_validation(outputVector::Array{Float64,1},
             # Xhat_z_scaled = scale_result.value
 
             # fit the model -
-            fit_model_result = ols_fit_linear_model(Yhat, Xhat)
+            fit_model_result = ols_fit_linear_model(Yhat, Xhat; lambda)
             if (isa(fit_model_result.value,Exception) == true)
                 throw(fit_model_result.value)
             end
